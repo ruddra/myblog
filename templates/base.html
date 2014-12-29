@@ -1,0 +1,11 @@
+<h1>Blogs</h1>
+<ul>
+    <li><a href='{% url 'blog_list' %}'>All Blogs</a></li>
+    <li><a href="{% url 'tag_list' %}">All Tags</a></li>
+    <li><a href="{% url 'json-feed' %}">Feed</a></li>
+    {% if user.is_superuser %}
+        <li><a href="/admin">Admin Page</a></li>
+    {% endif %}
+</ul>
+{% block content %}
+{% endblock %}

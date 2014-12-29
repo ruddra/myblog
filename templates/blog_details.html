@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ object.title }}</h2>
+<p>{{ object.body }}</p>
+
+<b>Tags:</b>
+    <p>
+{% for item in object.tags.all %}
+    <a href="{% url 'tag_details' pk=item.pk %}">{{ item }}</a>,
+{% endfor %}
+    </p>
+{% endblock %}
