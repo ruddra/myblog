@@ -4,9 +4,11 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from myblog.models import MyBlog, Tag
 
+
 class BlogListView(ListView):
     model = MyBlog
     template_name = 'blog_list.html'
+    
 
 class BlogDetailView(DetailView):
     model = MyBlog
@@ -24,7 +26,6 @@ class TagDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(TagDetailView, self).get_context_data(**kwargs)
-        # self.object = self.get_object()
         context['blogs_in_tag'] = MyBlog.objects.filter(tags__in=[self.object])
         return context
 
