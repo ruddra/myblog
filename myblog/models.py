@@ -9,6 +9,7 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+
 class MyBlog(models.Model):
     title = models.CharField(max_length=255)
     body = models.CharField(max_length=20000)

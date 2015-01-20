@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 from django.utils.safestring import mark_safe
-from django.views.generic.edit import CreateView, FormView
+from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from myblog.models import MyBlog, Tag
@@ -14,17 +14,20 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django_tables2.utils import A
 
+
 class TagTable(tables.Table):
     select = tables.CheckBoxColumn(accessor='pk')
     name = tables.LinkColumn('tag_details', args=[A('pk')])
 
     def render_description(self, **kwargs):
         return mark_safe(kwargs['value'])
+
     class Meta:
-        model= Tag
+        model = Tag
         sequence = 'select', 'name', 'description'
         exclude = {'id'}
         attrs = {"class": "paleblue"}
+
 
 class BlogListView(ListView):
     model = MyBlog
@@ -35,12 +38,12 @@ class BlogListView(ListView):
         blog_list = context['object_list']
         page = int(self.request.GET.get('page')) - 1 if self.request.GET.get('page') else None
         if page and page > 0:
-            context['object_list'] = blog_list[page*6-1: page*6+6]
+            context['object_list'] = blog_list[page * 6 - 1: page * 6 + 6]
         else:
             context['object_list'] = blog_list[0:6]
         pagination = list()
-        for i in range(int(blog_list.count() / 6)+1):
-            pagination.append(i+1)
+        for i in range(int(blog_list.count() / 6) + 1):
+            pagination.append(i + 1)
         context['pagination'] = pagination
         return context
 
@@ -67,14 +70,12 @@ class TagCreateView(CreateView):
     success_url = '/tags/'
 
 
-
-
-
 class RegisterUserView(CreateView):
     model = User
     form_class = RegisterForm
     template_name = 'create.html'
     success_url = '/'
+
 
 class LoginView(FormView):
     template_name = 'create.html'
@@ -94,6 +95,7 @@ class LoginView(FormView):
         else:
             return redirect('/login')
 
+
 class LogoutView(FormView):
     form_class = LogoutForm
     success_url = '/'
@@ -103,29 +105,21 @@ class LogoutView(FormView):
         form.logout(request)
         return super().form_valid(form)
 
+
 class BlogDetailView(DetailView):
     model = MyBlog
     template_name = 'blog_details.html'
-    
 
-# class TagListView(ListView):
-#     model = Tag
-#     template_name = 'tag_list.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['tagtable'] = TagTable(Tag.objects.all())
-#         return context
 
 class TagListView(SingleTableView):
     model = Tag
     template_name = 'tag_list.html'
     table_class = TagTable
 
+
 class TagDetailView(DetailView):
     model = Tag
     template_name = 'tag_details.html'
-
 
 
 class JsonResponseView(ListView):

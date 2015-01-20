@@ -5,8 +5,10 @@ from myblog.models import MyBlog, Tag
 
 from django.contrib import admin as admin_module
 
+
 class BlogForm(forms.ModelForm):
-    body= forms.CharField(widget=forms.Textarea)
+    body = forms.CharField(widget=forms.Textarea)
+
     class Meta:
         model = MyBlog
 
@@ -14,6 +16,7 @@ class BlogForm(forms.ModelForm):
 class BlogAdmin(admin.ModelAdmin):
     form = BlogForm
     filter_horizontal = ('tags',)
+
 
 admin.site.register(MyBlog, BlogAdmin)
 admin.site.register(Tag)
