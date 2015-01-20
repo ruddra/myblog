@@ -1,24 +1,24 @@
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from myblog.models import MyBlog, Tag
 from django.contrib.auth import logout, authenticate, login
 from django import forms
-
+from django.template.defaultfilters import slugify
 
 class BlogCreateForm(forms.ModelForm):
     tags = forms.CharField(help_text='Add tags by separating by comma(,).')
 
-    def save(self, commit=True):
-        instance = super().save(commit)
+    def save_data(self, user=None):
+        instance = super().save(commit=False)
+        instance.slug = slugify(self.cleaned_data['title'])
+        instance.slug = slugify(instance.title)
+        instance.author = user
+        instance.save()
         tags = self.cleaned_data['tags'].split(',')
         for item in tags:
             tag, status = Tag.objects.get_or_create(name=item.strip())
-            instance.tags.add(tag)
+            self.instance.tags.add(tag)
         return instance
-
-    def add_author(self, user):
-        instance = self.instance
-        instance.author = user
-        instance.save()
 
 
     class Meta:
@@ -27,7 +27,6 @@ class BlogCreateForm(forms.ModelForm):
         widgets = {
             'body': forms.Textarea(),
             }
-        exclude = ['tags']
 
 class TagCreateForm(forms.ModelForm):
 
@@ -39,28 +38,15 @@ class TagCreateForm(forms.ModelForm):
             }
 
 
-class RegisterForm(forms.ModelForm):
-    """
-    A form that creates a user, with no privileges, from the given username and
-    password.
-    """
-    error_messages = {
-        'duplicate_username': ("A user with that username already exists."),
-        'password_mismatch': ("The two password fields didn't match."),
-        }
-    username = forms.RegexField(label=("Username"), max_length=30,
-                                regex=r'^[\w.@+-]+$',
-                                help_text=("Required. 30 characters or fewer. Letters, digits and "
-                                            "@/./+/-/_ only."),
-                                error_messages={
-                                    'invalid': ("This value may contain only letters, numbers and "
-                                                 "@/./+/-/_ characters.")})
-    password1 = forms.CharField(label=("Password"),
-                                widget=forms.PasswordInput)
-    password2 = forms.CharField(label=("Password confirmation"),
-                                widget=forms.PasswordInput,
-                                help_text=("Enter the same password as above, for verification."))
+class RegisterForm(UserCreationForm):
 
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        user.is_staff = False
+        if commit:
+            user.save()
+        return user
     class Meta:
         model = User
         fields = ("username", 'first_name', 'last_name', 'email', )
@@ -83,12 +69,16 @@ class LoginForm(forms.Form):
         user = authenticate(username=data["username"], password=data["password"])
         if user is not None:
             if user.is_active:
-                login(request, user)
-                if not data['remember_me']:
-                    request.session.set_expiry(0)
-                return True
+                if user.is_staff:
+                    login(request, user)
+                    if not data['remember_me']:
+                        request.session.set_expiry(0)
+                    return True
+                else:
+                    raise Exception("Your account is disabled!")
             else:
-                raise Exception("Your account has been disabled!")
+                raise Exception("Your account is disabled!")
+
         else:
             raise Exception("Your username and password were incorrect.")
         return False

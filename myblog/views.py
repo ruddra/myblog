@@ -15,17 +15,34 @@ from django.utils.decorators import method_decorator
 from django_tables2.utils import A
 
 class TagTable(tables.Table):
+    select = tables.CheckBoxColumn(accessor='pk')
     name = tables.LinkColumn('tag_details', args=[A('pk')])
 
     def render_description(self, **kwargs):
         return mark_safe(kwargs['value'])
     class Meta:
         model= Tag
+        sequence = 'select', 'name', 'description'
+        exclude = {'id'}
         attrs = {"class": "paleblue"}
 
 class BlogListView(ListView):
     model = MyBlog
     template_name = 'blog_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        blog_list = context['object_list']
+        page = int(self.request.GET.get('page')) - 1 if self.request.GET.get('page') else None
+        if page and page > 0:
+            context['object_list'] = blog_list[page*6-1: page*6+6]
+        else:
+            context['object_list'] = blog_list[0:6]
+        pagination = list()
+        for i in range(int(blog_list.count() / 6)+1):
+            pagination.append(i+1)
+        context['pagination'] = pagination
+        return context
 
 
 class BlogCreateView(CreateView):
@@ -37,9 +54,10 @@ class BlogCreateView(CreateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            form.save(commit=True)
-            form.add_author(user=request.user)
-        return super().post(request, *args, **kwargs)
+            form.save_data(user=request.user)
+            return super().form_valid(form)
+        else:
+            return super().form_invalid(form)
 
 
 class TagCreateView(CreateView):
@@ -47,6 +65,8 @@ class TagCreateView(CreateView):
     form_class = TagCreateForm
     template_name = 'create.html'
     success_url = '/tags/'
+
+
 
 
 

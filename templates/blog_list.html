@@ -1,13 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
-
+    <div class="row">
+    <div class="row-fluid">
     {% for blog in object_list %}
-        <div class="row-fluid">
     <div class="col-md-4">
         <h3>{{ blog.title }}</h3>
-        <p>{{ blog.body|truncatechars:50 }}</p>
-        <p><a class="btn btn-default" href='{% url 'blog_details' pk=blog.pk %}' role="button">View details »</a></p>
+        <p>{{ blog.body|safe|escape|truncatechars:50 }}</p>
+        <p><a class="btn btn-xs btn-default" href='{% url 'blog_details' slug=blog.slug %}' role="button">View details »</a></p>
     </div>
     {% endfor %}
 </div>
+    </div>
+    </br>
+    <div class="row1">
+    <p><b>Pages:</b></p>
+        {% for item in pagination %}
+            <a class="btn btn-sm btn-primary" href="?page={{ item }}">Page {{ item }}</a>
+        {% endfor %}
+    </div>
+    </div>
 {% endblock %}
