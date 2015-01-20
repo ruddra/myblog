@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row" style="vertical-align: middle;">
+    <form action="" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="">
+            <label>{{ field.label }}</label>
+            <div class="">
+            {{ field }}
+            <span class="">{{ field.help_text }}</span>
+            <span class="">{{ field.errors }}</span>
+        {% endfor %}
+        </div>
+        </div>
+        </br>
+        <input type="submit" class="btn-info" value="Create"/>
+    </form>
+        </div>
+    </div>
+{% endblock %}

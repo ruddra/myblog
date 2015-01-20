@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h2>Tags</h2>
-    <ul>
-        {% for tags in object_list %}
-            <li> <a href='{% url 'tag_details' pk=tags.pk %}'>{{ tags.name }}</a>
-        {% endfor %}
-    </ul>
+
+    <div class="container">
+        <h2>Tags</h2>
+    <div class="container-fluid">
+        {% load render_table from django_tables2 %}
+        {% render_table table %}
+    </div>
+    </div>
+
 {% endblock %}
