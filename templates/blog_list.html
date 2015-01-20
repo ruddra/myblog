@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
-<ul>
+
     {% for blog in object_list %}
-        <li> <a href='{% url 'blog_details' pk=blog.pk %}'>{{ blog.title }}</a> <br/>
-        <p> {{ blog.body }} </p>
+        <div class="row-fluid">
+    <div class="col-md-4">
+        <h3>{{ blog.title }}</h3>
+        <p>{{ blog.body|truncatechars:50 }}</p>
+        <p><a class="btn btn-default" href='{% url 'blog_details' pk=blog.pk %}' role="button">View details »</a></p>
+    </div>
     {% endfor %}
-</ul>
+</div>
 {% endblock %}

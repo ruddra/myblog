@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>{{ object.title }}</h2>
-<p>{{ object.body }}</p>
+<h3>{{ object.author.first_name }} {{ object.author.last_name }}</h3>
+<h3>{{ object.publishing_date|date:'Y-m-d H:i' }}</h3>
+    <hr/>
+<p>{{ object.body|safe|escape }}</p>
 
 <b>Tags:</b>
     <p>
