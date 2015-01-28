@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>{{ object.title }}</h2>
-<h3>{{ object.author.first_name }} {{ object.author.last_name }}</h3>
-<h3>{{ object.publishing_date|date:'Y-m-d H:i' }}</h3>
+    <h3>{{ object.title }}</h3>
+    {% if object.author.first_name and   object.author.first_name %}
+        <h4>{{ object.author.first_name }} {{ object.author.last_name }}</h4>
+    {% else %}
+        <h4>{{ object.author.username }}</h4>
+    {% endif %}
+    <h4>{{ object.publishing_date|date:'Y-m-d H:i' }}</h4>
     <hr/>
-<p>{{ object.body|safe|escape }}</p>
+    <p>{{ object.body|safe|escape }}</p>
 
-<b>Tags:</b>
+    <b>Tags:</b>
     <p>
-{% for item in object.tags.all %}
-    <a href="{% url 'tag_details' pk=item.pk %}">{{ item }}</a>,
-{% endfor %}
+        {% for item in object.tags.all %}
+            <a href="{% url 'tag_details' slug=item.slug %}">{{ item }}</a>,
+        {% endfor %}
     </p>
 {% endblock %}

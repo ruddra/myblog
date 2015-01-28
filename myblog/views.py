@@ -1,23 +1,21 @@
 import json
 from django.contrib.auth.models import User
 from django.http.response import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.utils.safestring import mark_safe
-from django.views.generic.edit import CreateView, FormView, UpdateView
+from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from myblog.models import MyBlog, Tag
 from django_tables2 import SingleTableView
 import django_tables2 as tables
-from myprojects.forms import BlogCreateForm, RegisterForm, LogoutForm, TagCreateForm, LoginForm
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django_tables2.utils import A
+from myblog.models import MyBlog, Tag
+from myblog.forms import BlogCreateForm, RegisterForm, LogoutForm, TagCreateForm, LoginForm
 
 
 class TagTable(tables.Table):
     select = tables.CheckBoxColumn(accessor='pk')
-    name = tables.LinkColumn('tag_details', args=[A('pk')])
+    name = tables.LinkColumn('tag_details', args=[A('slug')])
 
     def render_description(self, **kwargs):
         return mark_safe(kwargs['value'])
@@ -25,7 +23,7 @@ class TagTable(tables.Table):
     class Meta:
         model = Tag
         sequence = 'select', 'name', 'description'
-        exclude = {'id'}
+        exclude = {'id', 'slug'}
         attrs = {"class": "paleblue"}
 
 
@@ -57,7 +55,7 @@ class BlogCreateView(CreateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            form.save_data(user=request.user)
+            form.save_author(user=request.user)
             return super().form_valid(form)
         else:
             return super().form_invalid(form)
@@ -136,3 +134,23 @@ class JsonResponseView(ListView):
             response_content[item.title] = data
 
         return HttpResponse(json.dumps(response_content), content_type="application/json")
+
+
+class BlogEditView(UpdateView):
+    model = MyBlog
+    form_class = BlogCreateForm
+    template_name = 'create.html'
+    success_url = '/'
+
+class BlogDeleteView(DeleteView):
+    model = MyBlog
+
+class TagEditView(UpdateView):
+    model = Tag
+    form_class = TagCreateForm
+    template_name = 'create.html'
+    success_url = '/tags/'
+
+class TagDeleteView(DeleteView):
+    model = Tag
+

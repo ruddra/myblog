@@ -1,10 +1,10 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.db import transaction
 from myblog.models import MyBlog, Tag
 from django.contrib.auth import logout, authenticate, login
 from django import forms
+
 
 class BlogCreateForm(forms.ModelForm):
     tags = forms.CharField(help_text='Add tags by separating by comma(,).')
@@ -14,12 +14,6 @@ class BlogCreateForm(forms.ModelForm):
             instance = kwargs['instance']
             if instance:
                 self.fields['tags'].initial = ', '.join([x.name for x in instance.tags.all()])
-
-    def clean_title(self):
-        data = self.cleaned_data['title']
-        if MyBlog.objects.filter(title=data).exists():
-            raise ValidationError('This title already exists')
-        return data
 
     def save(self, commit=True):
         with transaction.atomic():
@@ -44,13 +38,8 @@ class BlogCreateForm(forms.ModelForm):
             'body': forms.Textarea(),
             }
 
-class TagCreateForm(forms.ModelForm):
 
-    def clean_name(self):
-        data = self.cleaned_data['name']
-        if Tag.objects.filter(name=data).exists():
-            raise ValidationError('This tag already exists.')
-        return data
+class TagCreateForm(forms.ModelForm):
 
     class Meta:
         model = Tag
