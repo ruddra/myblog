@@ -4,7 +4,7 @@ from django.db import models
 
 # Create your models here.
 from django.template.defaultfilters import slugify
-
+import datetime
 
 class Tag(models.Model):
     name = models.CharField(max_length=255)
@@ -32,7 +32,7 @@ class MyBlog(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = slugify(datetime.datetime.now().date().strftime('%d_%m_%Y-')+self.title)
         return super().save(*args, **kwargs)
 
 

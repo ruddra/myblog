@@ -153,4 +153,9 @@ class TagEditView(UpdateView):
 
 class TagDeleteView(DeleteView):
     model = Tag
+    success_url = '/tags/'
+
+class BlogDeleteView(DeleteView):
+    model = MyBlog
+    success_url = '/'
 
