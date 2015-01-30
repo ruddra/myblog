@@ -3,7 +3,7 @@
     <div class="row">
     <div class="row-fluid">
     {% for blog in object_list %}
-    <div class="col-md-4">
+    <div class="col-md-4 well">
         <h3>{{ blog.title }}</h3>
         <p>{{ blog.body|safe|escape|truncatechars:50 }}</p>
         <p><a class="btn btn-xs btn-default" href='{% url 'blog_details' slug=blog.slug %}' role="button">View details »</a></p>

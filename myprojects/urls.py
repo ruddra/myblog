@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.auth.models import User
 from myblog.views import BlogListView, BlogDetailView, TagListView, TagDetailView, JsonResponseView, BlogCreateView, \
-    RegisterUserView, LogoutView, TagCreateView, LoginView, TagEditView, TagDeleteView
+    RegisterUserView, LogoutView, TagCreateView, LoginView, TagEditView, TagDeleteView, BlogEditView
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.generic.edit import FormView
 from django.contrib.auth.decorators import login_required
@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^tag/create/', login_required(TagCreateView.as_view()), name='tag_create'),
     url(r'^json-feed$', JsonResponseView.as_view(), name='json-feed'),
     url(r'^details/(?P<slug>[-_\w]+)/$', BlogDetailView.as_view(), name='blog_details'),
+    url(r'^edit/(?P<slug>[-_\w]+)/$', BlogEditView.as_view(), name='blog_edit'),
     url(r'^tags/details/(?P<slug>[-_\w]+)/$', TagDetailView.as_view(), name='tag_details'),
     url(r'^tags/edit/(?P<slug>[-_\w]+)/$', TagEditView.as_view(), name='tag_edit'),
     url(r'^tags/delete/(?P<slug>[-_\w]+)/$', TagDeleteView.as_view(), name='tag_delete'),

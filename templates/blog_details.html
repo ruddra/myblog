@@ -1,19 +1,30 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h3>{{ object.title }}</h3>
-    {% if object.author.first_name and   object.author.first_name %}
-        <h4>{{ object.author.first_name }} {{ object.author.last_name }}</h4>
-    {% else %}
-        <h4>{{ object.author.username }}</h4>
-    {% endif %}
-    <h4>{{ object.publishing_date|date:'Y-m-d H:i' }}</h4>
-    <hr/>
-    <p>{{ object.body|safe|escape }}</p>
+    <div class="well">
+    <div class="row">
+        <div class="col-md-8"><h3>{{ object.title }}</h3></div>
+        <div class="col-md-4"><button type="button" class="btn btn-success"><a href="{% url 'blog_edit' slug=object.slug %}">Edit</a></button></div>
+    </div>
 
-    <b>Tags:</b>
-    <p>
-        {% for item in object.tags.all %}
-            <a href="{% url 'tag_details' slug=item.slug %}">{{ item }}</a>,
-        {% endfor %}
-    </p>
+        {% if object.author.first_name and   object.author.first_name %}
+            <h4>{{ object.author.first_name }} {{ object.author.last_name }}</h4>
+        {% else %}
+            <h4>{{ object.author.username }}</h4>
+        {% endif %}
+        <h4>{{ object.publishing_date|date:'Y-m-d H:i' }}</h4>
+    </div>
+    <div class=" jumbotron">
+        <p>{{ object.body|safe|escape }}</p>
+    </div>
+        <p></p>
+<hr/>
+        <h3>Tags:</h3>
+
+        <h3>
+            {% for item in object.tags.all %}
+                &nbsp;<a href="{% url 'tag_details' slug=item.slug %}"><span class="label label-info">{{ item }}</span></a>&nbsp;
+            {% endfor %}
+        </h3>
+
+
 {% endblock %}
