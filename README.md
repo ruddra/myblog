@@ -18,5 +18,5 @@ A tutorial of making a simple blog. This tutorial covers on:
 etc.
 
 ### Tutorial Links:
-1. <a href="http://ruddra.com/2015/09/18/make-a-blog-using-django-part-1-2/">Make a Blog using Django Part 1</a>
-2. <a href="http://ruddra.com/2015/09/18/make-a-blog-using-django-part-2/">Make a Blog using Django Part 2</a>
+1. <a href="https://ruddra.com/make-a-blog-using-django-part-1-2/">Make a Blog using Django Part 1</a>
+2. <a href="https://ruddra.com/make-a-blog-using-django-part-2/">Make a Blog using Django Part 2</a>
